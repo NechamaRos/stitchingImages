@@ -35,7 +35,7 @@ namespace WindowsFormsApp1
             StitchingImages(imgs);
 
         }
-        static void StitchingImages(List<Mat> imgs)
+        private void StitchingImages(List<Mat> imgs)
         {
             foreach (Mat img in imgs)
             {
