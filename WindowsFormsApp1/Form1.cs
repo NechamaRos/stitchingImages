@@ -31,7 +31,6 @@ namespace WindowsFormsApp1
 
             openDialog();
         }
-<<<<<<< HEAD
 
         private void openDialog()
         {
@@ -76,9 +75,6 @@ namespace WindowsFormsApp1
         }
 
     private void StitchingImages(List<Mat> imgs)
-=======
-        private void StitchingImages(List<Mat> imgs)
->>>>>>> ce3fe92e5d22d46e33ca1d0aa3bb91301bb378ca
         {
             foreach (Mat img in imgs)
             {
