@@ -107,6 +107,9 @@
     <PackageReference Include="Emgu.CV.runtime.windows">
       <Version>4.5.2.4673</Version>
     </PackageReference>
+    <PackageReference Include="Emgu.CV.UI">
+      <Version>4.5.2.4673</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

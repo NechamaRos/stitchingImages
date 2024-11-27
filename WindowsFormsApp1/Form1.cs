@@ -14,28 +14,67 @@ using Emgu.CV.Stitching;
 using System.IO;
 using System.Runtime.InteropServices;
 using Emgu.CV.Util;
+using Emgu.CV.UI;
+
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        private List<string> selectedImagePaths;
+
         public Form1()
         {
             InitializeComponent();
 
-            Mat mat = CvInvoke.Imread("C:\\Users\\The user\\Downloads\\IMG20241125150920.jpg", ImreadModes.Color);
-            Mat mat2 = CvInvoke.Imread("C:\\Users\\The user\\Downloads\\IMG20241125150917.jpg", ImreadModes.Color);
-            Mat mat3 = CvInvoke.Imread("C:\\Users\\The user\\Downloads\\IMG20241125150915.jpg", ImreadModes.Color);
+            selectedImagePaths = new List<string>();
 
-            List<Mat> imgs = new List<Mat>();
-            imgs.Add(mat);
-            imgs.Add(mat2);
-            imgs.Add(mat3);
-
-            StitchingImages(imgs);
-
+            openDialog();
         }
-        static void StitchingImages(List<Mat> imgs)
+
+        private void openDialog()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+                Title = "Select images",
+                Multiselect = true 
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                selectedImagePaths.AddRange(openFileDialog.FileNames);
+
+                LoadImagesToPictureBoxes();
+            }
+            else
+            {
+                MessageBox.Show("No images selected. Closing the application");
+                button1.Visible = false;
+            }
+        }
+         
+        private void LoadImagesToPictureBoxes()
+        {
+            while (selectedImagePaths.Count < 3)
+            {
+                MessageBox.Show("Please select at least 3 images");
+                selectedImagePaths.Clear();
+                openDialog();
+               
+            }
+
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.Image = Image.FromFile(selectedImagePaths[0]);
+
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox2.Image = Image.FromFile(selectedImagePaths[1]);
+
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.Image = Image.FromFile(selectedImagePaths[2]);
+        }
+
+    private void StitchingImages(List<Mat> imgs)
         {
             foreach (Mat img in imgs)
             {
@@ -57,14 +96,31 @@ namespace WindowsFormsApp1
             if (status != Stitcher.Status.Ok)
             {
                 Console.WriteLine("Can't stitch images");
+                label1.Text = "Can't stitch this images";
                 return;
             }
+            Mat stitchMat=new Mat();
+
+            CvInvoke.Resize(pano, stitchMat, new System.Drawing.Size(500, 300), 0, 0, Inter.Linear);
 
             CvInvoke.Imwrite("result.jpg", pano);
-            CvInvoke.Imshow("stitchingImage", pano);
+            CvInvoke.Imshow("stitchingImage", stitchMat);
             CvInvoke.WaitKey(0);
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            List<Mat> imgs = new List<Mat>();
+
+
+            foreach (string path in selectedImagePaths)
+            {
+                Mat mat = CvInvoke.Imread(path, ImreadModes.Color);
+                imgs.Add(mat);
+            }
+
+            StitchingImages(imgs);
+        }
 
     }
 }
